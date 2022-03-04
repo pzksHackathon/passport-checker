@@ -27,11 +27,10 @@ def accept_number(update: Update, context: CallbackContext):
         update.message.reply_text("Будь-ласка введіть серію та номер паспорта у форматі ХХ УУУУУУ\nХХ - серія паспорта\nУУУУУУ - номер паспорта\nТакож зауважте - вводити необхідно українськими літерами.\nУвага! Бот у стадії розробки, тож можуть бути помилки!")
     else:
         series, number = message.split(" ")
-        logging.info(Record.objects.filter(series=series))
         if Record.objects.filter(series=series, number=number):
             update.message.reply_text("УВАГА!!! ПАСПОРТ З ЦИМ НОМЕРОМ БУВ ЗНАЙДЕНИЙ У НАШІЙ БАЗІ! НЕГАЙНО ПОВІДОМТЕ ПРАЦІВНИКІВ ПОЛІЦІЇ! ГОЛОВНЕ ЗБЕРІГАЙТЕ СПОКІЙ ТА ДАВАЙТЕ НАШИМ ЗАХИСНИКАМ РОБИТИ ЇХ РОБОТУ!")
         else:
-            update.message.reply_text("Все добре! Не хвилюйтесь. Паспорт дійсний")
+            update.message.reply_text("Паспорт за цим номером не було знайдено в базі недійсних паспортів")
 
 
 
