@@ -3,7 +3,8 @@ import os
 import django
 import logging
 from dotenv import load_dotenv
-
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "passport_checker.settings")
+django.setup()
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext, MessageHandler
 
@@ -13,9 +14,7 @@ logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 load_dotenv()
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "passport_checker.settings")
-django.conf.settings.configure()
-django.setup()
+
 
 def start(update: Update, context: CallbackContext) -> None:
     update.message.reply_text('Слава Україні!\n Цей бот перевіряє чи введений номер паспорта є дійсним паспортом громадянина України.')
