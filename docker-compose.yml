@@ -1,0 +1,41 @@
+version: "3.8"
+
+volumes:
+  leadswop_data: {}
+
+services: 
+  backend:
+    build: .
+    image: passport-checker-backend-image
+    ports: 
+      - "8000:8000"
+    depends_on:
+      - postgres
+    volumes:
+    - ./:/app/
+    links: 
+      - "postgres:postgres"
+    env_file: .env
+    restart: on-failure
+  
+  postgres:
+    image: postgres:13-alpine
+    ports:
+      - "54320:5432"
+    volumes:
+      - leadswop_data:/var/lib/postgresql/data:cached
+    env_file: .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  bot:
+    image: passport-checker-backend-image
+    command: python bot.py
+    depends_on:
+      - postgres
+      - backend
+    volumes:
+    - ./:/app/
