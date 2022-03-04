@@ -14,6 +14,7 @@ logging.basicConfig(level=logging.DEBUG,
 
 load_dotenv()
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "passport_checker.settings")
+django.conf.settings.configure()
 django.setup()
 
 def start(update: Update, context: CallbackContext) -> None:
