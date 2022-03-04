@@ -39,3 +39,4 @@ services:
       - backend
     volumes:
     - ./:/app/
+    env_file: .env
