@@ -2,7 +2,7 @@ import re
 import csv
 from collections import namedtuple
 from django.db import models
-from django.db import IntegrityError
+from django.core.exceptions import MultipleObjectsReturned
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -34,17 +34,20 @@ def parse_csv(sender, instance, created, **kwargs):
             for item in items:
                 item.series.strip(" ")
                 item.number.strip(" ")
-                if range_regex.findall(item.number):
-                    start, end = item.number.split("-")
-                    for number in range(int(start), int(end) + 1):
-                        zeros = (6 - len(str(number))) * "0"
+                try:
+                    if range_regex.findall(item.number):
+                        start, end = item.number.split("-")
+                        for number in range(int(start), int(end) + 1):
+                            zeros = (6 - len(str(number))) * "0"
+                            Record.objects.get_or_create(
+                                series=item.series,
+                                number=zeros + str(number)
+                            )
+                    else:
                         Record.objects.get_or_create(
                             series=item.series,
-                            number=zeros + str(number)
+                            number=item.number
                         )
-                else:
-                    Record.objects.get_or_create(
-                        series=item.series,
-                        number=item.number
-                    )
+                except MultipleObjectsReturned:
+                    continue
             file.close()
