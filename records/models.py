@@ -2,12 +2,13 @@ import re
 import csv
 from collections import namedtuple
 from django.db import models
+from django.db import IntegrityError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
 class Record(models.Model):
-    series = models.CharField(max_length=3)
+    series = models.CharField(max_length=3) 
     number = models.CharField(max_length=8)
     uploaded = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -37,12 +38,12 @@ def parse_csv(sender, instance, created, **kwargs):
                     start, end = item.number.split("-")
                     for number in range(int(start), int(end) + 1):
                         zeros = (6 - len(str(number))) * "0"
-                        Record.objects.update_or_create(
+                        Record.objects.get_or_create(
                             series=item.series,
                             number=zeros + str(number)
                         )
                 else:
-                    Record.objects.update_or_create(
+                    Record.objects.get_or_create(
                         series=item.series,
                         number=item.number
                     )
