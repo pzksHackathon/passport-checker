@@ -12,6 +12,9 @@ class Record(models.Model):
     uploaded = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        unique_together = ("series", "number", )
+
 
 class FileUpload(models.Model):
     user = models.ForeignKey("auth.User", on_delete=models.SET_NULL, null=True, blank=True)
